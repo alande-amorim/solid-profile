@@ -1,0 +1,44 @@
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+@import "./mixins";
+
+* {
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background: #eee;
+    font-family: Helvetica, Roboto, sans-serif;
+}
+
+.user-profile { 
+    display: flex;
+    width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    @include border-radius;
+
+    background: #fff;
+
+    &__avatar { 
+        @include border-radius;
+        margin-inline: 0 20px;
+    }
+
+    &__info{
+        & > * {
+            line-height: 1em;
+            margin-block-end: 0.3em; 
+        }
+        
+        &__name {
+            font-size: 2em;
+        }
+
+        &__role {
+            font-size: 1em;
+            font-weight: bold;
+            color: lighten(#000, 50%);
+        }
+    }
+}
