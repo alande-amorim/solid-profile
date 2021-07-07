@@ -155,11 +155,12 @@ var _default = {
 };
 exports.default = _default;
 },{}],"node_modules/queue-microtask/index.js":[function(require,module,exports) {
+var global = arguments[3];
 /*! queue-microtask. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 let promise
 
 module.exports = typeof queueMicrotask === 'function'
-  ? queueMicrotask.bind(globalThis)
+  ? queueMicrotask.bind(typeof window !== 'undefined' ? window : global)
   // reuse resolved promise, and allocate it lazily
   : cb => (promise || (promise = Promise.resolve()))
     .then(cb)
@@ -696,7 +697,7 @@ class N3Lexer {
 }
 
 exports.default = N3Lexer;
-},{"./IRIs":"node_modules/n3/src/IRIs.js","queue-microtask":"node_modules/queue-microtask/index.js","buffer":"node_modules/node-libs-browser/node_modules/buffer/index.js"}],"node_modules/n3/src/N3Util.js":[function(require,module,exports) {
+},{"./IRIs":"node_modules/n3/src/IRIs.js","queue-microtask":"node_modules/queue-microtask/index.js","buffer":"node_modules/buffer/index.js"}],"node_modules/n3/src/N3Util.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1060,31 +1061,47 @@ function termToId(term) {
 class Quad extends Term {
   constructor(subject, predicate, object, graph) {
     super('');
-    this.subject = subject;
-    this.predicate = predicate;
-    this.object = object;
-    this.graph = graph || DEFAULTGRAPH;
+    this._subject = subject;
+    this._predicate = predicate;
+    this._object = object;
+    this._graph = graph || DEFAULTGRAPH;
   } // ### The term type of this term
 
 
   get termType() {
     return 'Quad';
+  }
+
+  get subject() {
+    return this._subject;
+  }
+
+  get predicate() {
+    return this._predicate;
+  }
+
+  get object() {
+    return this._object;
+  }
+
+  get graph() {
+    return this._graph;
   } // ### Returns a plain object representation of this quad
 
 
   toJSON() {
     return {
       termType: this.termType,
-      subject: this.subject.toJSON(),
-      predicate: this.predicate.toJSON(),
-      object: this.object.toJSON(),
-      graph: this.graph.toJSON()
+      subject: this._subject.toJSON(),
+      predicate: this._predicate.toJSON(),
+      object: this._object.toJSON(),
+      graph: this._graph.toJSON()
     };
   } // ### Returns whether this object represents the same quad as the other
 
 
   equals(other) {
-    return !!other && this.subject.equals(other.subject) && this.predicate.equals(other.predicate) && this.object.equals(other.object) && this.graph.equals(other.graph);
+    return !!other && this._subject.equals(other.subject) && this._predicate.equals(other.predicate) && this._object.equals(other.object) && this._graph.equals(other.graph);
   }
 
 }
@@ -2270,9 +2287,9 @@ var _N3DataFactory = _interopRequireWildcard(require("./N3DataFactory"));
 
 var _N3Util = require("./N3Util");
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2664,9 +2681,11 @@ function characterReplacer(character) {
 
   return result;
 }
-},{"./IRIs":"node_modules/n3/src/IRIs.js","./N3DataFactory":"node_modules/n3/src/N3DataFactory.js","./N3Util":"node_modules/n3/src/N3Util.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/stream-browser.js":[function(require,module,exports) {
+},{"./IRIs":"node_modules/n3/src/IRIs.js","./N3DataFactory":"node_modules/n3/src/N3DataFactory.js","./N3Util":"node_modules/n3/src/N3Util.js"}],"node_modules/readable-stream/lib/internal/streams/stream-browser.js":[function(require,module,exports) {
 module.exports = require('events').EventEmitter;
-},{"events":"node_modules/events/events.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/buffer_list.js":[function(require,module,exports) {
+},{"events":"node_modules/events/events.js"}],"node_modules/parcel-bundler/src/builtins/_empty.js":[function(require,module,exports) {
+
+},{}],"node_modules/readable-stream/lib/internal/streams/buffer_list.js":[function(require,module,exports) {
 
 'use strict';
 
@@ -2935,7 +2954,216 @@ module.exports = /*#__PURE__*/function () {
 
   return BufferList;
 }();
-},{"buffer":"node_modules/node-libs-browser/node_modules/buffer/index.js","util":"node_modules/parcel-bundler/src/builtins/_empty.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/destroy.js":[function(require,module,exports) {
+},{"buffer":"node_modules/buffer/index.js","util":"node_modules/parcel-bundler/src/builtins/_empty.js"}],"node_modules/process/browser.js":[function(require,module,exports) {
+
+// shim for using process in browser
+var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+  throw new Error('setTimeout has not been defined');
+}
+
+function defaultClearTimeout() {
+  throw new Error('clearTimeout has not been defined');
+}
+
+(function () {
+  try {
+    if (typeof setTimeout === 'function') {
+      cachedSetTimeout = setTimeout;
+    } else {
+      cachedSetTimeout = defaultSetTimout;
+    }
+  } catch (e) {
+    cachedSetTimeout = defaultSetTimout;
+  }
+
+  try {
+    if (typeof clearTimeout === 'function') {
+      cachedClearTimeout = clearTimeout;
+    } else {
+      cachedClearTimeout = defaultClearTimeout;
+    }
+  } catch (e) {
+    cachedClearTimeout = defaultClearTimeout;
+  }
+})();
+
+function runTimeout(fun) {
+  if (cachedSetTimeout === setTimeout) {
+    //normal enviroments in sane situations
+    return setTimeout(fun, 0);
+  } // if setTimeout wasn't available but was latter defined
+
+
+  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+    cachedSetTimeout = setTimeout;
+    return setTimeout(fun, 0);
+  }
+
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedSetTimeout(fun, 0);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+      return cachedSetTimeout.call(null, fun, 0);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+      return cachedSetTimeout.call(this, fun, 0);
+    }
+  }
+}
+
+function runClearTimeout(marker) {
+  if (cachedClearTimeout === clearTimeout) {
+    //normal enviroments in sane situations
+    return clearTimeout(marker);
+  } // if clearTimeout wasn't available but was latter defined
+
+
+  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+    cachedClearTimeout = clearTimeout;
+    return clearTimeout(marker);
+  }
+
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedClearTimeout(marker);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+      return cachedClearTimeout.call(null, marker);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+      // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+      return cachedClearTimeout.call(this, marker);
+    }
+  }
+}
+
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+  if (!draining || !currentQueue) {
+    return;
+  }
+
+  draining = false;
+
+  if (currentQueue.length) {
+    queue = currentQueue.concat(queue);
+  } else {
+    queueIndex = -1;
+  }
+
+  if (queue.length) {
+    drainQueue();
+  }
+}
+
+function drainQueue() {
+  if (draining) {
+    return;
+  }
+
+  var timeout = runTimeout(cleanUpNextTick);
+  draining = true;
+  var len = queue.length;
+
+  while (len) {
+    currentQueue = queue;
+    queue = [];
+
+    while (++queueIndex < len) {
+      if (currentQueue) {
+        currentQueue[queueIndex].run();
+      }
+    }
+
+    queueIndex = -1;
+    len = queue.length;
+  }
+
+  currentQueue = null;
+  draining = false;
+  runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+  var args = new Array(arguments.length - 1);
+
+  if (arguments.length > 1) {
+    for (var i = 1; i < arguments.length; i++) {
+      args[i - 1] = arguments[i];
+    }
+  }
+
+  queue.push(new Item(fun, args));
+
+  if (queue.length === 1 && !draining) {
+    runTimeout(drainQueue);
+  }
+}; // v8 likes predictible objects
+
+
+function Item(fun, array) {
+  this.fun = fun;
+  this.array = array;
+}
+
+Item.prototype.run = function () {
+  this.fun.apply(null, this.array);
+};
+
+process.title = 'browser';
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) {
+  return [];
+};
+
+process.binding = function (name) {
+  throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () {
+  return '/';
+};
+
+process.chdir = function (dir) {
+  throw new Error('process.chdir is not supported');
+};
+
+process.umask = function () {
+  return 0;
+};
+},{}],"node_modules/readable-stream/lib/internal/streams/destroy.js":[function(require,module,exports) {
 var process = require("process");
 'use strict'; // undocumented cb() API, needed for core, not for public API
 
@@ -3042,7 +3270,7 @@ module.exports = {
   undestroy: undestroy,
   errorOrDestroy: errorOrDestroy
 };
-},{"process":"node_modules/process/browser.js"}],"node_modules/n3/node_modules/readable-stream/errors-browser.js":[function(require,module,exports) {
+},{"process":"node_modules/process/browser.js"}],"node_modules/readable-stream/errors-browser.js":[function(require,module,exports) {
 'use strict';
 
 function _inheritsLoose(subClass, superClass) {
@@ -3172,7 +3400,7 @@ createErrorType('ERR_UNKNOWN_ENCODING', function (arg) {
 }, TypeError);
 createErrorType('ERR_STREAM_UNSHIFT_AFTER_END_EVENT', 'stream.unshift() after end event');
 module.exports.codes = codes;
-},{}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/state.js":[function(require,module,exports) {
+},{}],"node_modules/readable-stream/lib/internal/streams/state.js":[function(require,module,exports) {
 'use strict';
 
 var ERR_INVALID_OPT_VALUE = require('../../../errors').codes.ERR_INVALID_OPT_VALUE;
@@ -3200,7 +3428,106 @@ function getHighWaterMark(state, options, duplexKey, isDuplex) {
 module.exports = {
   getHighWaterMark: getHighWaterMark
 };
-},{"../../../errors":"node_modules/n3/node_modules/readable-stream/errors-browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/_stream_writable.js":[function(require,module,exports) {
+},{"../../../errors":"node_modules/readable-stream/errors-browser.js"}],"node_modules/inherits/inherits_browser.js":[function(require,module,exports) {
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    if (superCtor) {
+      ctor.super_ = superCtor
+      ctor.prototype = Object.create(superCtor.prototype, {
+        constructor: {
+          value: ctor,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        }
+      })
+    }
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    if (superCtor) {
+      ctor.super_ = superCtor
+      var TempCtor = function () {}
+      TempCtor.prototype = superCtor.prototype
+      ctor.prototype = new TempCtor()
+      ctor.prototype.constructor = ctor
+    }
+  }
+}
+
+},{}],"node_modules/util-deprecate/browser.js":[function(require,module,exports) {
+var global = arguments[3];
+
+/**
+ * Module exports.
+ */
+
+module.exports = deprecate;
+
+/**
+ * Mark that a method should not be used.
+ * Returns a modified function which warns once by default.
+ *
+ * If `localStorage.noDeprecation = true` is set, then it is a no-op.
+ *
+ * If `localStorage.throwDeprecation = true` is set, then deprecated functions
+ * will throw an Error when invoked.
+ *
+ * If `localStorage.traceDeprecation = true` is set, then deprecated functions
+ * will invoke `console.trace()` instead of `console.error()`.
+ *
+ * @param {Function} fn - the function to deprecate
+ * @param {String} msg - the string to print to the console when `fn` is invoked
+ * @returns {Function} a new "deprecated" version of `fn`
+ * @api public
+ */
+
+function deprecate (fn, msg) {
+  if (config('noDeprecation')) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (config('throwDeprecation')) {
+        throw new Error(msg);
+      } else if (config('traceDeprecation')) {
+        console.trace(msg);
+      } else {
+        console.warn(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+}
+
+/**
+ * Checks `localStorage` for boolean values for the given `name`.
+ *
+ * @param {String} name
+ * @returns {Boolean}
+ * @api private
+ */
+
+function config (name) {
+  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
+  try {
+    if (!global.localStorage) return false;
+  } catch (_) {
+    return false;
+  }
+  var val = global.localStorage[name];
+  if (null == val) return false;
+  return String(val).toLowerCase() === 'true';
+}
+
+},{}],"node_modules/readable-stream/lib/_stream_writable.js":[function(require,module,exports) {
 
 var global = arguments[3];
 var process = require("process");
@@ -3901,7 +4228,7 @@ Writable.prototype._undestroy = destroyImpl.undestroy;
 Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
-},{"util-deprecate":"node_modules/util-deprecate/browser.js","./internal/streams/stream":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/stream-browser.js","buffer":"node_modules/node-libs-browser/node_modules/buffer/index.js","./internal/streams/destroy":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/state":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/state.js","../errors":"node_modules/n3/node_modules/readable-stream/errors-browser.js","inherits":"node_modules/inherits/inherits_browser.js","./_stream_duplex":"node_modules/n3/node_modules/readable-stream/lib/_stream_duplex.js","process":"node_modules/process/browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/_stream_duplex.js":[function(require,module,exports) {
+},{"util-deprecate":"node_modules/util-deprecate/browser.js","./internal/streams/stream":"node_modules/readable-stream/lib/internal/streams/stream-browser.js","buffer":"node_modules/buffer/index.js","./internal/streams/destroy":"node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/state":"node_modules/readable-stream/lib/internal/streams/state.js","../errors":"node_modules/readable-stream/errors-browser.js","inherits":"node_modules/inherits/inherits_browser.js","./_stream_duplex":"node_modules/readable-stream/lib/_stream_duplex.js","process":"node_modules/process/browser.js"}],"node_modules/readable-stream/lib/_stream_duplex.js":[function(require,module,exports) {
 var process = require("process");
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4042,7 +4369,373 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
     this._writableState.destroyed = value;
   }
 });
-},{"./_stream_readable":"node_modules/n3/node_modules/readable-stream/lib/_stream_readable.js","./_stream_writable":"node_modules/n3/node_modules/readable-stream/lib/_stream_writable.js","inherits":"node_modules/inherits/inherits_browser.js","process":"node_modules/process/browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/end-of-stream.js":[function(require,module,exports) {
+},{"./_stream_readable":"node_modules/readable-stream/lib/_stream_readable.js","./_stream_writable":"node_modules/readable-stream/lib/_stream_writable.js","inherits":"node_modules/inherits/inherits_browser.js","process":"node_modules/process/browser.js"}],"node_modules/safe-buffer/index.js":[function(require,module,exports) {
+
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
+/* eslint-disable node/no-deprecated-api */
+var buffer = require('buffer')
+var Buffer = buffer.Buffer
+
+// alternative to using Object.keys for old browsers
+function copyProps (src, dst) {
+  for (var key in src) {
+    dst[key] = src[key]
+  }
+}
+if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
+  module.exports = buffer
+} else {
+  // Copy properties from require('buffer')
+  copyProps(buffer, exports)
+  exports.Buffer = SafeBuffer
+}
+
+function SafeBuffer (arg, encodingOrOffset, length) {
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.prototype = Object.create(Buffer.prototype)
+
+// Copy static methods from Buffer
+copyProps(Buffer, SafeBuffer)
+
+SafeBuffer.from = function (arg, encodingOrOffset, length) {
+  if (typeof arg === 'number') {
+    throw new TypeError('Argument must not be a number')
+  }
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.alloc = function (size, fill, encoding) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  var buf = Buffer(size)
+  if (fill !== undefined) {
+    if (typeof encoding === 'string') {
+      buf.fill(fill, encoding)
+    } else {
+      buf.fill(fill)
+    }
+  } else {
+    buf.fill(0)
+  }
+  return buf
+}
+
+SafeBuffer.allocUnsafe = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return Buffer(size)
+}
+
+SafeBuffer.allocUnsafeSlow = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return buffer.SlowBuffer(size)
+}
+
+},{"buffer":"node_modules/buffer/index.js"}],"node_modules/string_decoder/lib/string_decoder.js":[function(require,module,exports) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+/*<replacement>*/
+
+var Buffer = require('safe-buffer').Buffer;
+/*</replacement>*/
+
+var isEncoding = Buffer.isEncoding || function (encoding) {
+  encoding = '' + encoding;
+  switch (encoding && encoding.toLowerCase()) {
+    case 'hex':case 'utf8':case 'utf-8':case 'ascii':case 'binary':case 'base64':case 'ucs2':case 'ucs-2':case 'utf16le':case 'utf-16le':case 'raw':
+      return true;
+    default:
+      return false;
+  }
+};
+
+function _normalizeEncoding(enc) {
+  if (!enc) return 'utf8';
+  var retried;
+  while (true) {
+    switch (enc) {
+      case 'utf8':
+      case 'utf-8':
+        return 'utf8';
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return 'utf16le';
+      case 'latin1':
+      case 'binary':
+        return 'latin1';
+      case 'base64':
+      case 'ascii':
+      case 'hex':
+        return enc;
+      default:
+        if (retried) return; // undefined
+        enc = ('' + enc).toLowerCase();
+        retried = true;
+    }
+  }
+};
+
+// Do not cache `Buffer.isEncoding` when checking encoding names as some
+// modules monkey-patch it to support additional encodings
+function normalizeEncoding(enc) {
+  var nenc = _normalizeEncoding(enc);
+  if (typeof nenc !== 'string' && (Buffer.isEncoding === isEncoding || !isEncoding(enc))) throw new Error('Unknown encoding: ' + enc);
+  return nenc || enc;
+}
+
+// StringDecoder provides an interface for efficiently splitting a series of
+// buffers into a series of JS strings without breaking apart multi-byte
+// characters.
+exports.StringDecoder = StringDecoder;
+function StringDecoder(encoding) {
+  this.encoding = normalizeEncoding(encoding);
+  var nb;
+  switch (this.encoding) {
+    case 'utf16le':
+      this.text = utf16Text;
+      this.end = utf16End;
+      nb = 4;
+      break;
+    case 'utf8':
+      this.fillLast = utf8FillLast;
+      nb = 4;
+      break;
+    case 'base64':
+      this.text = base64Text;
+      this.end = base64End;
+      nb = 3;
+      break;
+    default:
+      this.write = simpleWrite;
+      this.end = simpleEnd;
+      return;
+  }
+  this.lastNeed = 0;
+  this.lastTotal = 0;
+  this.lastChar = Buffer.allocUnsafe(nb);
+}
+
+StringDecoder.prototype.write = function (buf) {
+  if (buf.length === 0) return '';
+  var r;
+  var i;
+  if (this.lastNeed) {
+    r = this.fillLast(buf);
+    if (r === undefined) return '';
+    i = this.lastNeed;
+    this.lastNeed = 0;
+  } else {
+    i = 0;
+  }
+  if (i < buf.length) return r ? r + this.text(buf, i) : this.text(buf, i);
+  return r || '';
+};
+
+StringDecoder.prototype.end = utf8End;
+
+// Returns only complete characters in a Buffer
+StringDecoder.prototype.text = utf8Text;
+
+// Attempts to complete a partial non-UTF-8 character using bytes from a Buffer
+StringDecoder.prototype.fillLast = function (buf) {
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, buf.length);
+  this.lastNeed -= buf.length;
+};
+
+// Checks the type of a UTF-8 byte, whether it's ASCII, a leading byte, or a
+// continuation byte. If an invalid byte is detected, -2 is returned.
+function utf8CheckByte(byte) {
+  if (byte <= 0x7F) return 0;else if (byte >> 5 === 0x06) return 2;else if (byte >> 4 === 0x0E) return 3;else if (byte >> 3 === 0x1E) return 4;
+  return byte >> 6 === 0x02 ? -1 : -2;
+}
+
+// Checks at most 3 bytes at the end of a Buffer in order to detect an
+// incomplete multi-byte UTF-8 character. The total number of bytes (2, 3, or 4)
+// needed to complete the UTF-8 character (if applicable) are returned.
+function utf8CheckIncomplete(self, buf, i) {
+  var j = buf.length - 1;
+  if (j < i) return 0;
+  var nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 1;
+    return nb;
+  }
+  if (--j < i || nb === -2) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 2;
+    return nb;
+  }
+  if (--j < i || nb === -2) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) {
+      if (nb === 2) nb = 0;else self.lastNeed = nb - 3;
+    }
+    return nb;
+  }
+  return 0;
+}
+
+// Validates as many continuation bytes for a multi-byte UTF-8 character as
+// needed or are available. If we see a non-continuation byte where we expect
+// one, we "replace" the validated continuation bytes we've seen so far with
+// a single UTF-8 replacement character ('\ufffd'), to match v8's UTF-8 decoding
+// behavior. The continuation byte check is included three times in the case
+// where all of the continuation bytes for a character exist in the same buffer.
+// It is also done this way as a slight performance increase instead of using a
+// loop.
+function utf8CheckExtraBytes(self, buf, p) {
+  if ((buf[0] & 0xC0) !== 0x80) {
+    self.lastNeed = 0;
+    return '\ufffd';
+  }
+  if (self.lastNeed > 1 && buf.length > 1) {
+    if ((buf[1] & 0xC0) !== 0x80) {
+      self.lastNeed = 1;
+      return '\ufffd';
+    }
+    if (self.lastNeed > 2 && buf.length > 2) {
+      if ((buf[2] & 0xC0) !== 0x80) {
+        self.lastNeed = 2;
+        return '\ufffd';
+      }
+    }
+  }
+}
+
+// Attempts to complete a multi-byte UTF-8 character using bytes from a Buffer.
+function utf8FillLast(buf) {
+  var p = this.lastTotal - this.lastNeed;
+  var r = utf8CheckExtraBytes(this, buf, p);
+  if (r !== undefined) return r;
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, p, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, p, 0, buf.length);
+  this.lastNeed -= buf.length;
+}
+
+// Returns all complete UTF-8 characters in a Buffer. If the Buffer ended on a
+// partial character, the character's bytes are buffered until the required
+// number of bytes are available.
+function utf8Text(buf, i) {
+  var total = utf8CheckIncomplete(this, buf, i);
+  if (!this.lastNeed) return buf.toString('utf8', i);
+  this.lastTotal = total;
+  var end = buf.length - (total - this.lastNeed);
+  buf.copy(this.lastChar, 0, end);
+  return buf.toString('utf8', i, end);
+}
+
+// For UTF-8, a replacement character is added when ending on a partial
+// character.
+function utf8End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + '\ufffd';
+  return r;
+}
+
+// UTF-16LE typically needs two bytes per character, but even if we have an even
+// number of bytes available, we need to check if we end on a leading/high
+// surrogate. In that case, we need to wait for the next two bytes in order to
+// decode the last character properly.
+function utf16Text(buf, i) {
+  if ((buf.length - i) % 2 === 0) {
+    var r = buf.toString('utf16le', i);
+    if (r) {
+      var c = r.charCodeAt(r.length - 1);
+      if (c >= 0xD800 && c <= 0xDBFF) {
+        this.lastNeed = 2;
+        this.lastTotal = 4;
+        this.lastChar[0] = buf[buf.length - 2];
+        this.lastChar[1] = buf[buf.length - 1];
+        return r.slice(0, -1);
+      }
+    }
+    return r;
+  }
+  this.lastNeed = 1;
+  this.lastTotal = 2;
+  this.lastChar[0] = buf[buf.length - 1];
+  return buf.toString('utf16le', i, buf.length - 1);
+}
+
+// For UTF-16LE we do not explicitly append special replacement characters if we
+// end on a partial character, we simply let v8 handle that.
+function utf16End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) {
+    var end = this.lastTotal - this.lastNeed;
+    return r + this.lastChar.toString('utf16le', 0, end);
+  }
+  return r;
+}
+
+function base64Text(buf, i) {
+  var n = (buf.length - i) % 3;
+  if (n === 0) return buf.toString('base64', i);
+  this.lastNeed = 3 - n;
+  this.lastTotal = 3;
+  if (n === 1) {
+    this.lastChar[0] = buf[buf.length - 1];
+  } else {
+    this.lastChar[0] = buf[buf.length - 2];
+    this.lastChar[1] = buf[buf.length - 1];
+  }
+  return buf.toString('base64', i, buf.length - n);
+}
+
+function base64End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + this.lastChar.toString('base64', 0, 3 - this.lastNeed);
+  return r;
+}
+
+// Pass bytes on through for single-byte encodings (e.g. ascii, latin1, hex)
+function simpleWrite(buf) {
+  return buf.toString(this.encoding);
+}
+
+function simpleEnd(buf) {
+  return buf && buf.length ? this.write(buf) : '';
+}
+},{"safe-buffer":"node_modules/safe-buffer/index.js"}],"node_modules/readable-stream/lib/internal/streams/end-of-stream.js":[function(require,module,exports) {
 // Ported from https://github.com/mafintosh/end-of-stream with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -4147,7 +4840,7 @@ function eos(stream, opts, callback) {
 }
 
 module.exports = eos;
-},{"../../../errors":"node_modules/n3/node_modules/readable-stream/errors-browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/async_iterator.js":[function(require,module,exports) {
+},{"../../../errors":"node_modules/readable-stream/errors-browser.js"}],"node_modules/readable-stream/lib/internal/streams/async_iterator.js":[function(require,module,exports) {
 var process = require("process");
 'use strict';
 
@@ -4369,11 +5062,11 @@ var createReadableStreamAsyncIterator = function createReadableStreamAsyncIterat
 };
 
 module.exports = createReadableStreamAsyncIterator;
-},{"./end-of-stream":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/end-of-stream.js","process":"node_modules/process/browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/from-browser.js":[function(require,module,exports) {
+},{"./end-of-stream":"node_modules/readable-stream/lib/internal/streams/end-of-stream.js","process":"node_modules/process/browser.js"}],"node_modules/readable-stream/lib/internal/streams/from-browser.js":[function(require,module,exports) {
 module.exports = function () {
   throw new Error('Readable.from is not available in the browser');
 };
-},{}],"node_modules/n3/node_modules/readable-stream/lib/_stream_readable.js":[function(require,module,exports) {
+},{}],"node_modules/readable-stream/lib/_stream_readable.js":[function(require,module,exports) {
 
 var global = arguments[3];
 var process = require("process");
@@ -5501,7 +6194,7 @@ function indexOf(xs, x) {
 
   return -1;
 }
-},{"events":"node_modules/events/events.js","./internal/streams/stream":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/stream-browser.js","buffer":"node_modules/node-libs-browser/node_modules/buffer/index.js","util":"node_modules/parcel-bundler/src/builtins/_empty.js","./internal/streams/buffer_list":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/buffer_list.js","./internal/streams/destroy":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/state":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/state.js","../errors":"node_modules/n3/node_modules/readable-stream/errors-browser.js","inherits":"node_modules/inherits/inherits_browser.js","./_stream_duplex":"node_modules/n3/node_modules/readable-stream/lib/_stream_duplex.js","string_decoder/":"node_modules/string_decoder/lib/string_decoder.js","./internal/streams/async_iterator":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/async_iterator.js","./internal/streams/from":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/from-browser.js","process":"node_modules/process/browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/_stream_transform.js":[function(require,module,exports) {
+},{"events":"node_modules/events/events.js","./internal/streams/stream":"node_modules/readable-stream/lib/internal/streams/stream-browser.js","buffer":"node_modules/buffer/index.js","util":"node_modules/parcel-bundler/src/builtins/_empty.js","./internal/streams/buffer_list":"node_modules/readable-stream/lib/internal/streams/buffer_list.js","./internal/streams/destroy":"node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/state":"node_modules/readable-stream/lib/internal/streams/state.js","../errors":"node_modules/readable-stream/errors-browser.js","inherits":"node_modules/inherits/inherits_browser.js","./_stream_duplex":"node_modules/readable-stream/lib/_stream_duplex.js","string_decoder/":"node_modules/string_decoder/lib/string_decoder.js","./internal/streams/async_iterator":"node_modules/readable-stream/lib/internal/streams/async_iterator.js","./internal/streams/from":"node_modules/readable-stream/lib/internal/streams/from-browser.js","process":"node_modules/process/browser.js"}],"node_modules/readable-stream/lib/_stream_transform.js":[function(require,module,exports) {
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5703,7 +6396,7 @@ function done(stream, er, data) {
   if (stream._transformState.transforming) throw new ERR_TRANSFORM_ALREADY_TRANSFORMING();
   return stream.push(null);
 }
-},{"../errors":"node_modules/n3/node_modules/readable-stream/errors-browser.js","./_stream_duplex":"node_modules/n3/node_modules/readable-stream/lib/_stream_duplex.js","inherits":"node_modules/inherits/inherits_browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/_stream_passthrough.js":[function(require,module,exports) {
+},{"../errors":"node_modules/readable-stream/errors-browser.js","./_stream_duplex":"node_modules/readable-stream/lib/_stream_duplex.js","inherits":"node_modules/inherits/inherits_browser.js"}],"node_modules/readable-stream/lib/_stream_passthrough.js":[function(require,module,exports) {
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5743,7 +6436,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":"node_modules/n3/node_modules/readable-stream/lib/_stream_transform.js","inherits":"node_modules/inherits/inherits_browser.js"}],"node_modules/n3/node_modules/readable-stream/lib/internal/streams/pipeline.js":[function(require,module,exports) {
+},{"./_stream_transform":"node_modules/readable-stream/lib/_stream_transform.js","inherits":"node_modules/inherits/inherits_browser.js"}],"node_modules/readable-stream/lib/internal/streams/pipeline.js":[function(require,module,exports) {
 // Ported from https://github.com/mafintosh/pump with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -5841,7 +6534,7 @@ function pipeline() {
 }
 
 module.exports = pipeline;
-},{"../../../errors":"node_modules/n3/node_modules/readable-stream/errors-browser.js","./end-of-stream":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/end-of-stream.js"}],"node_modules/n3/node_modules/readable-stream/readable-browser.js":[function(require,module,exports) {
+},{"../../../errors":"node_modules/readable-stream/errors-browser.js","./end-of-stream":"node_modules/readable-stream/lib/internal/streams/end-of-stream.js"}],"node_modules/readable-stream/readable-browser.js":[function(require,module,exports) {
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -5851,7 +6544,7 @@ exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 exports.finished = require('./lib/internal/streams/end-of-stream.js');
 exports.pipeline = require('./lib/internal/streams/pipeline.js');
-},{"./lib/_stream_readable.js":"node_modules/n3/node_modules/readable-stream/lib/_stream_readable.js","./lib/_stream_writable.js":"node_modules/n3/node_modules/readable-stream/lib/_stream_writable.js","./lib/_stream_duplex.js":"node_modules/n3/node_modules/readable-stream/lib/_stream_duplex.js","./lib/_stream_transform.js":"node_modules/n3/node_modules/readable-stream/lib/_stream_transform.js","./lib/_stream_passthrough.js":"node_modules/n3/node_modules/readable-stream/lib/_stream_passthrough.js","./lib/internal/streams/end-of-stream.js":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/end-of-stream.js","./lib/internal/streams/pipeline.js":"node_modules/n3/node_modules/readable-stream/lib/internal/streams/pipeline.js"}],"node_modules/n3/src/N3Store.js":[function(require,module,exports) {
+},{"./lib/_stream_readable.js":"node_modules/readable-stream/lib/_stream_readable.js","./lib/_stream_writable.js":"node_modules/readable-stream/lib/_stream_writable.js","./lib/_stream_duplex.js":"node_modules/readable-stream/lib/_stream_duplex.js","./lib/_stream_transform.js":"node_modules/readable-stream/lib/_stream_transform.js","./lib/_stream_passthrough.js":"node_modules/readable-stream/lib/_stream_passthrough.js","./lib/internal/streams/end-of-stream.js":"node_modules/readable-stream/lib/internal/streams/end-of-stream.js","./lib/internal/streams/pipeline.js":"node_modules/readable-stream/lib/internal/streams/pipeline.js"}],"node_modules/n3/src/N3Store.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5867,9 +6560,9 @@ var _IRIs = _interopRequireDefault(require("./IRIs"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 // **N3Store** objects store N3 quads by graph in memory.
 // ## Constructor
@@ -6078,7 +6771,15 @@ class N3Store {
       }
     };
   } // ## Public methods
-  // ### `addQuad` adds a new quad to the store.
+  // ### `add` adds the specified quad to the dataset.
+  // Returns the dataset instance it was called on.
+  // Existing quads, as defined in Quad.equals, will be ignored.
+
+
+  add(quad) {
+    this.addQuad(quad);
+    return this;
+  } // ### `addQuad` adds a new quad to the store.
   // Returns if the quad index has changed, if the quad did not already exist.
 
 
@@ -6127,6 +6828,20 @@ class N3Store {
 
   addQuads(quads) {
     for (let i = 0; i < quads.length; i++) this.addQuad(quads[i]);
+  } // ### `delete` removes the specified quad from the dataset.
+  // Returns the dataset instance it was called on.
+
+
+  delete(quad) {
+    this.removeQuad(quad);
+    return this;
+  } // ### `has` determines whether a dataset includes a certain quad.
+  // Returns true or false as appropriate.
+
+
+  has(quad) {
+    const quads = this.getQuads(quad.subject, quad.predicate, quad.object, quad.graph);
+    return quads.length !== 0;
   } // ### `import` adds a stream of quads to the store
 
 
@@ -6183,7 +6898,17 @@ class N3Store {
 
 
   removeMatches(subject, predicate, object, graph) {
-    return this.remove(this.match(subject, predicate, object, graph));
+    const stream = new _readableStream.Readable({
+      objectMode: true
+    });
+
+    stream._read = () => {
+      for (const quad of this.getQuads(subject, predicate, object, graph)) stream.push(quad);
+
+      stream.push(null);
+    };
+
+    return this.remove(stream);
   } // ### `deleteGraph` removes all triples with the given graph from the store
 
 
@@ -6224,22 +6949,16 @@ class N3Store {
     }
 
     return quads;
-  } // ### `match` returns a stream of quads matching a pattern.
+  } // ### `match` returns a new dataset that is comprised of all quads in the current instance matching the given arguments.
+  // The logic described in Quad Matching is applied for each quad in this dataset to check if it should be included in the output dataset.
+  // Note: This method always returns a new DatasetCore, even if that dataset contains no quads.
+  // Note: Since a DatasetCore is an unordered set, the order of the quads within the returned sequence is arbitrary.
   // Setting any field to `undefined` or `null` indicates a wildcard.
+  // For backwards compatibility, the object return also implements the Readable stream interface.
 
 
   match(subject, predicate, object, graph) {
-    const stream = new _readableStream.Readable({
-      objectMode: true
-    }); // Initialize stream once it is being read
-
-    stream._read = () => {
-      for (const quad of this.getQuads(subject, predicate, object, graph)) stream.push(quad);
-
-      stream.push(null);
-    };
-
-    return stream;
+    return new DatasetCoreAndReadableStream(this, subject, predicate, object, graph);
   } // ### `countQuads` returns the number of quads matching a pattern.
   // Setting any field to `undefined` or `null` indicates a wildcard.
 
@@ -6594,6 +7313,13 @@ class N3Store {
 
     if (remove) this.removeQuads(toRemove);
     return lists;
+  } // ### Store is an iterable.
+  // Can be used where iterables are expected: for...of loops, array spread operator,
+  // `yield*`, and destructuring assignment (order is not guaranteed).
+
+
+  *[Symbol.iterator]() {
+    yield* this.getQuads();
   }
 
 } // Determines whether the argument is a string
@@ -6604,7 +7330,75 @@ exports.default = N3Store;
 function isString(s) {
   return typeof s === 'string' || s instanceof String;
 }
-},{"./N3DataFactory":"node_modules/n3/src/N3DataFactory.js","readable-stream":"node_modules/n3/node_modules/readable-stream/readable-browser.js","./IRIs":"node_modules/n3/src/IRIs.js"}],"node_modules/n3/src/N3StreamParser.js":[function(require,module,exports) {
+/**
+ * A class that implements both DatasetCore and Readable.
+ */
+
+
+class DatasetCoreAndReadableStream extends _readableStream.Readable {
+  constructor(n3Store, subject, predicate, object, graph) {
+    super({
+      objectMode: true
+    });
+    Object.assign(this, {
+      n3Store,
+      subject,
+      predicate,
+      object,
+      graph
+    });
+  }
+
+  get filtered() {
+    if (!this._filtered) {
+      const {
+        n3Store,
+        graph,
+        object,
+        predicate,
+        subject
+      } = this;
+      const quads = n3Store.getQuads(subject, predicate, object, graph);
+      this._filtered = new N3Store(quads, {
+        factory: n3Store._factory
+      });
+    }
+
+    return this._filtered;
+  }
+
+  get size() {
+    return this.filtered.size;
+  }
+
+  _read() {
+    for (const quad of this.filtered.getQuads()) this.push(quad);
+
+    this.push(null);
+  }
+
+  add(quad) {
+    return this.filtered.add(quad);
+  }
+
+  delete(quad) {
+    return this.filtered.delete(quad);
+  }
+
+  has(quad) {
+    return this.filtered.has(quad);
+  }
+
+  match(subject, predicate, object, graph) {
+    return new DatasetCoreAndReadableStream(this.filtered, subject, predicate, object, graph);
+  }
+
+  *[Symbol.iterator]() {
+    yield* this.filtered.getQuads();
+  }
+
+}
+},{"./N3DataFactory":"node_modules/n3/src/N3DataFactory.js","readable-stream":"node_modules/readable-stream/readable-browser.js","./IRIs":"node_modules/n3/src/IRIs.js"}],"node_modules/n3/src/N3StreamParser.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6677,7 +7471,7 @@ class N3StreamParser extends _readableStream.Transform {
 }
 
 exports.default = N3StreamParser;
-},{"./N3Parser":"node_modules/n3/src/N3Parser.js","readable-stream":"node_modules/n3/node_modules/readable-stream/readable-browser.js"}],"node_modules/n3/src/N3StreamWriter.js":[function(require,module,exports) {
+},{"./N3Parser":"node_modules/n3/src/N3Parser.js","readable-stream":"node_modules/readable-stream/readable-browser.js"}],"node_modules/n3/src/N3StreamWriter.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6696,9 +7490,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class N3StreamWriter extends _readableStream.Transform {
   constructor(options) {
     super({
-      encoding: 'utf8'
-    });
-    this._writableState.objectMode = true; // Set up writer with a dummy stream object
+      encoding: 'utf8',
+      writableObjectMode: true
+    }); // Set up writer with a dummy stream object
 
     const writer = this._writer = new _N3Writer.default({
       write: (quad, encoding, callback) => {
@@ -6740,7 +7534,7 @@ class N3StreamWriter extends _readableStream.Transform {
 }
 
 exports.default = N3StreamWriter;
-},{"readable-stream":"node_modules/n3/node_modules/readable-stream/readable-browser.js","./N3Writer":"node_modules/n3/src/N3Writer.js"}],"node_modules/n3/src/index.js":[function(require,module,exports) {
+},{"readable-stream":"node_modules/readable-stream/readable-browser.js","./N3Writer":"node_modules/n3/src/N3Writer.js"}],"node_modules/n3/src/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6868,9 +7662,9 @@ exports.Util = Util;
 
 var _N3DataFactory = _interopRequireWildcard(require("./N3DataFactory"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 },{"./N3Lexer":"node_modules/n3/src/N3Lexer.js","./N3Parser":"node_modules/n3/src/N3Parser.js","./N3Writer":"node_modules/n3/src/N3Writer.js","./N3Store":"node_modules/n3/src/N3Store.js","./N3StreamParser":"node_modules/n3/src/N3StreamParser.js","./N3StreamWriter":"node_modules/n3/src/N3StreamWriter.js","./N3Util":"node_modules/n3/src/N3Util.js","./N3DataFactory":"node_modules/n3/src/N3DataFactory.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -6901,7 +7695,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53201" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56420" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

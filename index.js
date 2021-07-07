@@ -64,15 +64,14 @@ async function saveUserData({name, role}) {
     const profile = getThing(myDataset, WEBID);
 
     let updatedProfile = setStringNoLocale(profile, VCARD.fn, name);
+    updatedProfile = setStringNoLocale(updatedProfile, VCARD.role, role);
     const myChangedDataset = setThing(myDataset, updatedProfile);
     const savedProfileResource = await saveSolidDatasetAt(
         WEBID,
         myChangedDataset,
         {fetch}
     );
-
     console.log(savedProfileResource);
-    // updatedProfile = addStringNoLocale(updatedProfile, FOAF.nick, "docs");
 }
 
 document.querySelector("#form-save-user").addEventListener('submit', function(e) {
@@ -85,3 +84,28 @@ document.querySelector("#form-save-user").addEventListener('submit', function(e)
 });
 
 loginAndFetch();
+
+window.onload = function() {
+    var menuItens = document.querySelectorAll('.nav-tabs > li');
+    for (var i = 0; i < menuItens.length; i++) {
+        menuItens[i].addEventListener("click", function(e){
+            e.preventDefault();
+
+            var tabs = document.querySelectorAll('.tab-content > .tab-pane');
+            for (var k = 0; k < tabs.length; k++) {
+                tabs[k].className = "tab-pane";
+            }
+
+            for (var j = 0; j < menuItens.length; j++) {
+                menuItens[j].className = "";
+            }
+
+            
+            var linkElement = this.getElementsByTagName("A")[0];
+            linkElement.className += " active";
+            var linkTab = linkElement.dataset.target;
+            var tab = document.querySelectorAll(linkTab)[0];
+            tab.className = "tab-pane active";
+        });
+    };
+};

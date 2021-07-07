@@ -9,12 +9,16 @@
 body {
     background: #eee;
     font-family: Helvetica, Roboto, sans-serif;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .user-profile { 
+    border: 1px solid rgba(0, 0, 0, 0.125);
     display: flex;
     width: 600px;
-    margin: 40px auto;
+    margin-inline: auto;
     padding: 20px;
     @include border-radius;
 

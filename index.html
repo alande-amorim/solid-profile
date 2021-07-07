@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="mh-100">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,39 +8,82 @@
     <link rel="stylesheet" href="./src/styles/style.scss">
     <script src="./index.js" defer></script>
 </head>
-<body>
-    <button class="btn btn-primary" id="btn-login">Log in</button>
-    
-    <div class="user-profile">
-        <img class="user-profile__avatar" src="//via.placeholder.com/128x128" id="user-photo" alt="" width="128">
-        <div class="user-profile__info">
-            <p class="user-profile__info__name" id="user-name">John Smith</p>
-            <p class="user-profile__info__role" id="user-role">Worker</p>
-            <p class="user-profile__info__link" id="user-link">@johnsmith</p>
-            <p class="user-profile__info__link" id="user-age">20 yo</p>
-        </div>
-    </div>
+<body class="mh-100 py-5 d-flex justify-content-center align-items-center">
 
-    <form id="form-save-user" class="card w-50 mx-auto">
-        <div class="card-body">
-            <h4 class="card-title mb-3">Update User Data</h4>
-            <div class="mb-3">
-                <label for="" class="form-label">Name: </label>
-                <input type="text" class="form-control" id="user-name-input">
-            </div>
-            <div class="mb-3">
-                <label for="" class="form-label">Role:</label>
-                <input type="text" class="form-control" id="user-role-input">
-            </div>
-            <div class="mb-3">
-                <label for="" class="form-label">Picture:</label>
-                <input type="file" class="form-control">
+    <div class="wrapper w-50">
+        
+        <div class="user-profile w-100">
+            <img class="user-profile__avatar" src="//via.placeholder.com/128x128" id="user-photo" alt="" width="128">
+            <div class="user-profile__info">
+                <p class="user-profile__info__name" id="user-name">John Smith</p>
+                <p class="user-profile__info__role" id="user-role">Worker</p>
+                <p class="user-profile__info__link" id="user-link">@johnsmith</p>
+                <p class="user-profile__info__link" id="user-age">20 yo</p>
             </div>
         </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Save</button>
+    
+        <div class="card mt-3">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="true" href="#edit-profile-tab" data-target="#edit-profile-tab">Profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#friends-tab" data-target="#friends-tab">Friends</a>
+                  </li>
+                </ul>
+            </div>
+
+            <div class="card-body">
+            
+                <div class="tab-content" id="myTabContent">
+
+                    <div class="tab-pane fade show active" id="edit-profile-tab" role="tabpanel" aria-labelledby="home-tab">
+                        <h4 class="card-title mb-3">Update Profile</h4>
+
+                        <form id="form-save-user">
+                            <div class="mb-3">
+                                <label for="" class="form-label">Name: </label>
+                                <input type="text" class="form-control" id="user-name-input">
+                            </div>
+                            <div class="mb-3">
+                                <label for="" class="form-label">Role:</label>
+                                <input type="text" class="form-control" id="user-role-input">
+                            </div>
+                            <div class="mb-3">
+                                <label for="" class="form-label">Picture:</label>
+                                <input type="file" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="friends-tab" role="tabpanel" aria-labelledby="profile-tab">
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="">Cras justo odio</a></li>
+                          </ul>                          
+                    </div>
+
+                </div>
+            </div>
         </div>
-    </form>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h4 class="card-title">Search user</h4>
+                <form action="" class="search-user">
+                    <label for="search-input" class="form-label">User's Web ID</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="https://example.solidcommunity.net/profile/card#me" id="search-input">
+                        <button class="btn btn-primary" type="submit" id="button-addon2">Search</button>
+                      </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
 
 </body>
 </html>
